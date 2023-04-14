@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mask
+  m_Name: PortalPlane
   m_Shader: {fileID: 4800000, guid: 9a4b26f4d5ab48d4dbc47882652df0f7, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -21,7 +21,6 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _StencilComp: 3
+    m_Floats: []
     m_Colors: []
   m_BuildTextureStacks: []
