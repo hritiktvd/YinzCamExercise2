@@ -1,35 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject Cube;
-    private bool isCubeON;
-    // Start is called before the first frame update
-    void Start()
+    public GameObject UICanvas;
+    public List<GameObject> DriverInformation;
+    public List<Button> TeamButtons;
+
+    private void OnEnable()
     {
-        isCubeON = true;
+        EventsManager.onPortalEnter += () => spawnUI(true);
+        EventsManager.onPortalExit += () => spawnUI(false);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        EventsManager.onPortalEnter -= () => spawnUI(true);
+        EventsManager.onPortalExit -= () => spawnUI(false);
     }
 
-    public void spawnCube()
-    {
-        if (isCubeON)
-        {
-            Cube.SetActive(false);
-            isCubeON = false;
-        }
+    void Start() { 
+        UICanvas.SetActive(false);
+        HideAllTeamInfo();
+    }
 
-        else if (!isCubeON)
-        {
-            Cube.SetActive(true);
-            isCubeON = true;
-        }
+    public void spawnTeamInfo(int teamID)
+    {
+        DriverInformation[teamID].SetActive(true);
+        TeamButtons[teamID].gameObject.SetActive(false);
+    }
+
+    private void HideAllTeamInfo()
+    {
+        foreach (var Team in DriverInformation) { Team.SetActive(false); }
+    }
+
+    private void spawnUI(bool activeState) {UICanvas.SetActive(activeState); }
+
+    public void CloseButton(int teamID)
+    {
+        DriverInformation[teamID].SetActive(false);
+        TeamButtons[teamID].gameObject.SetActive(true);
     }
 }

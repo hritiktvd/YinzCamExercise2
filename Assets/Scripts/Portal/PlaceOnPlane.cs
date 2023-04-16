@@ -14,28 +14,34 @@ using UnityEngine.XR.ARSubsystems;
 [RequireComponent(typeof(ARRaycastManager))]
 public class PlaceOnPlane : MonoBehaviour
 {
-    [SerializeField]
-    [Tooltip("Instantiates this prefab on a plane at the touch location.")]
-    GameObject m_PlacedPrefab;
+    //[SerializeField]
+    //[Tooltip("Instantiates this prefab on a plane at the touch location.")]
+    //GameObject m_PlacedPrefab;
 
     UnityEvent placementUpdate;
 
     [SerializeField]
     GameObject visualObject;
 
-    /// <summary>
-    /// The prefab to instantiate on touch.
-    /// </summary>
-    public GameObject placedPrefab
-    {
-        get { return m_PlacedPrefab; }
-        set { m_PlacedPrefab = value; }
-    }
+    [SerializeField]
+    GameObject PortalEnvironment;
 
-    /// <summary>
-    /// The object instantiated as a result of a successful raycast intersection with a plane.
-    /// </summary>
-    public GameObject spawnedObject { get; private set; }
+    [SerializeField]
+    GameObject ARCamera;
+
+    ///// <summary>
+    ///// The prefab to instantiate on touch.
+    ///// </summary>
+    //public GameObject placedPrefab
+    //{
+    //    get { return m_PlacedPrefab; }
+    //    set { m_PlacedPrefab = value; }
+    //}
+
+    ///// <summary>
+    ///// The object instantiated as a result of a successful raycast intersection with a plane.
+    ///// </summary>
+    public GameObject spawnedObject;
 
     void Awake()
     {
@@ -44,7 +50,8 @@ public class PlaceOnPlane : MonoBehaviour
         if (placementUpdate == null)
             placementUpdate = new UnityEvent();
 
-        placementUpdate.AddListener(DiableVisual);
+        placementUpdate.AddListener(DisableVisual);
+        PortalEnvironment.SetActive(false);
     }
 
     bool TryGetTouchPosition(out Vector2 touchPosition)
@@ -61,30 +68,45 @@ public class PlaceOnPlane : MonoBehaviour
 
     void Update()
     {
-        if (!TryGetTouchPosition(out Vector2 touchPosition))
-            return;
+        //if (!TryGetTouchPosition(out Vector2 touchPosition))
+        //    return;
 
-        if (m_RaycastManager.Raycast(touchPosition, s_Hits, TrackableType.PlaneWithinPolygon))
-        {
-            // Raycast hits are sorted by distance, so the first one
-            // will be the closest hit.
-            var hitPose = s_Hits[0].pose;
+        //if (m_RaycastManager.Raycast(touchPosition, s_Hits, TrackableType.PlaneWithinPolygon))
+        //{
+        //    // Raycast hits are sorted by distance, so the first one
+        //    // will be the closest hit.
+        //    var hitPose = s_Hits[0].pose;
 
-            if (spawnedObject == null)
-            {
-                spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation);
-                EventsManager.PortalSpawned();
-            }
-            else
-            {
-                //spawnedObject.transform.position = hitPose.position;
-                Debug.Log("Move Object");
-            }
-            placementUpdate.Invoke();
-        }
+        //    if (spawnedObject == null)
+        //    {
+        //        //spawnedObject = Instantiate(m_PlacedPrefab, hitPose.position, hitPose.rotation);
+        //        m_PlacedPrefab.SetActive(true);
+        //        spawnedObject = m_PlacedPrefab;
+        //        spawnedObject.transform.position = hitPose.position;
+        //        spawnedObject.transform.rotation = hitPose.rotation;
+        //        EventsManager.PortalSpawned();
+        //    }
+        //    else
+        //    {
+        //        //spawnedObject.transform.position = hitPose.position;
+        //        Debug.Log("Move Object");
+        //    }
+        //    placementUpdate.Invoke();
+        //}
     }
 
-    public void DiableVisual()
+    [ContextMenu("Spawn Env")]
+    public void SpawnPortal()
+    {
+        PortalEnvironment.transform.position = ARCamera.transform.position + ARCamera.transform.forward * 1.5f;
+        PortalEnvironment.transform.rotation = Quaternion.Euler(new Vector3(-90f, 0f, ARCamera.transform.rotation.eulerAngles.y));
+        PortalEnvironment.SetActive(true);
+        //spawnedObject = Instantiate(PortalEnvironment, ARCamera.transform.position, Quaternion.Euler(new Vector3(-90f, 0f, -90f)));
+        //spawnedObject.SetActive(true);
+        EventsManager.PortalSpawned();
+    }
+
+    public void DisableVisual()
     {
         visualObject.SetActive(false);
     }

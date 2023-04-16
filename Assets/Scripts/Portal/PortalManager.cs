@@ -30,7 +30,7 @@ public class PortalManager : MonoBehaviour
 
     void Start()
     {
-        Environment.SetActive(false);
+        //Environment.SetActive(false);
         foreach(var material in PortalObject)
         {
             material.EnvironmentObjectMat = material.EnvironmentObject.GetComponent<Renderer>().sharedMaterials;
